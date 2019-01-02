@@ -83,9 +83,13 @@ Codes/Scripts
                 mkdir -p ~/scripts/photobooth
                 cd ~/scripts/photobooth
 
-                sudo wget raw.github.com/safay/RPi_photobooth/master/assemble_and_print
-                sudo wget raw.github.com/safay/RPi_photobooth/master/photo_booth.py
-                sudo wget raw.github.com/safay/RPi_photobooth/master/startup_script
+                sudo wget raw.github.com/codeschnipsler/Fotobox/master/assemble_and_print
+                sudo wget raw.github.com/codeschnipsler/Fotobox/master/photo_booth.py
+                sudo wget raw.github.com/codeschnipsler/Fotobox/master/startup_script
+                sudo wget raw.github.com/codeschnipsler/Fotobox/master/cloze_FEH
+                sudo wget raw.github.com/codeschnipsler/Fotobox/master/scripts_slideshow
+                sudo wget raw.github.com/codeschnipsler/Fotobox/master/scripts_slideshow_all
+
                 sudo chmod 755 *
 
                 sudo nano assemble_and_print
