@@ -1,0 +1,4 @@
+#!/bin/sh
+sleep 16
+sudo sh /home/pi/scripts/photobooth/script_slideshow_all
+sudo python /home/pi/scripts/photobooth/photo_booth.py

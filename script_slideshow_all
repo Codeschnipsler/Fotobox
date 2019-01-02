@@ -1,0 +1,6 @@
+!/bin/bash
+
+
+export DISPLAY=:0.0
+XAUTHORITY=/home/pi/.Xauthority
+feh -Smtime -Z -F -R 5 -D10 /home/pi/PB_archive &
