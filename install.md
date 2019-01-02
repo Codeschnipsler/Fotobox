@@ -109,9 +109,10 @@ If the step above works, then make the script run automatically at startup. This
                 sudo nano /etc/rc.local
 
 Now, add the line
+
                 /home/pi/scripts/photobooth/startup_script &
-                above the "exit 0" line
-                ^X to exit, save the changes
+above the "exit 0" line
+^X to exit, save the changes
 
 Restart the RPi
                 Sudo reboot
