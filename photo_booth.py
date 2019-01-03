@@ -1,83 +1,84 @@
 #!/usr/bin/python
 
-import RPi.GPIO as GPIO, time, os, subprocess
+import subprocess
 import os
+from gpiozero import Button,LED
+from signal import pause
+from time import sleep
+from subprocess import check_call
 
-counter=0
 
-# GPIO setup
-GPIO.setmode(GPIO.BCM)
-SWITCH = 24
-GPIO.setup(SWITCH, GPIO.IN)
-RESET = 25
-GPIO.setup(RESET, GPIO.IN)
-PRINT_LED = 22
-POSE_LED = 18
-BUTTON_LED = 23
-GPIO.setup(POSE_LED, GPIO.OUT)
-GPIO.setup(BUTTON_LED, GPIO.OUT)
-GPIO.setup(PRINT_LED, GPIO.OUT)
-GPIO.output(BUTTON_LED, True)
-GPIO.output(PRINT_LED, False)
+SWITCH = Button(24)
+RESET = Button(17)
+SHUT = Button(3)
 
-#os.system("/home/pi/scripts/photobooth/script_instructions"
-try:
-    while True:
-      if (GPIO.input(SWITCH)):
-        snap = 0
-        while snap < 4:
-          print("pose!")
-          GPIO.output(BUTTON_LED, False)
-          GPIO.output(POSE_LED, True)
-          time.sleep(0.1)
-          for i in range(5):
-            GPIO.output(POSE_LED, False)
-            time.sleep(0.1)
-            GPIO.output(POSE_LED, True)
-            time.sleep(0.1)
-          for i in range(2):
-            GPIO.output(POSE_LED, False)
-            time.sleep(0.1)
-            GPIO.output(POSE_LED, True)
-            time.sleep(0.1)
-          GPIO.output(POSE_LED, False)
-          print("SNAP")
-          gpout = subprocess.check_output("gphoto2 --capture-image-and-download --filename /home/pi$
-          print(gpout)
-          if "ERROR" not in gpout: 
-            snap += 1 
-            os.system("/home/pi/scripts/photobooth/script_slideshow")
+PRINT_LED = LED(22)
+POSE_LED = LED(18)
+BUTTON_LED = LED(23)
 
-          GPIO.output(POSE_LED, False)
-          time.sleep(0.1)
-        print("please wait while your photos print...")
-        GPIO.output(PRINT_LED, True)
-        # build image and send to printer
-        
-    	os.system("/home/pi/scripts/photobooth/cloze_FEH")
+def def_SHUT():
+            PRINT_LED.on()
+            sleep(0.1)
+            PRINT_LED.off()
+            sleep(0.1)
+            PRINT_LED.on()
+            sleep(0.1)
+            PRINT_LED.off()
+            sleep(0.1)
+            os.system("sudo shutdown -h now")  #shutdown now
+def def_RESET():
+            PRINT_LED.on()
+            sleep(0.1)
+            PRINT_LED.off()
+            sleep(0.1)
+            POSE_LED.on()
+            sleep(0.1)
+            POSE_LED.off()
+            sleep(0.1)
+            os.system("sudo reboot")     #reboot
 
-        subprocess.call("sudo /home/pi/scripts/photobooth/assemble_and_print", shell=True)
-        os.system("/home/pi/scripts/photobooth/script_slideshow_all")
-        # TODO: implement a reboot button
-        # Wait to ensure that print queue doesn't pile up
+def def_SWITCH():
+            snap = 0
+            while snap < 4:
+              print("pose!")
+              BUTTON_LED.off()
+              POSE_LED.on()
+              sleep(1.5)
+              for i in range(5):
+                POSE_LED.off()
+                sleep(0.1)
+                POSE_LED.on()
+                sleep(0.1)
+              for i in range(2):
+                POSE_LED.off()
+                sleep(0.1)
+                POSE_LED.on()
+                sleep(0.1)
+              POSE_LED.off()
+              print("SNAP")
+              gpout = subprocess.check_output("gphoto2 --capture-image-and-download --filename /home/pi/photobooth_images/photobooth%H%M%S.$
+              print(gpout)
+              if "ERROR" not in gpout:
+                snap += 1
+              os.system("/home/pi/scripts/photobooth/script_slideshow")
+              POSE_LED.off()
+              sleep(0.5)
+            print("please wait while your photos print...")
+            PRINT_LED.on()
+            #stop slideshow
+            os.system("/home/pi/scripts/photobooth/cloze_FEH")
+            # build image and send to printer
+            subprocess.call("sudo /home/pi/scripts/photobooth/assemble_and_print", shell=True)
+            #start new slideshow with all pics
+            os.system("/home/pi/scripts/photobooth/script_slideshow_all")
+            sleep(10)
+            print("ready for next round")
+            PRINT_LED.off()
+            BUTTON_LED.on()
 
-        time.sleep(10)
-        counter +=1
-        print("ready for next round")
-        GPIO.output(PRINT_LED, False)
-        GPIO.output(BUTTON_LED, True)
+BUTTON_LED.on()
+SHUT.when_pressed = def_SHUT
+RESET.when_pressed = def_RESET
+SWITCH.when_pressed = def_SWITCH
 
-except KeyboardInterrupt:  
-    # here you put any code you want to run before the program   
-    # exits when you press CTRL+C  
-    print "\n", counter # print value of counter  
-  
-except:  
-    # this catches ALL other exceptions including errors.  
-    # You won't get any error messages for debugging  
-    # so only use it once your code is working  
-    print "Other error or exception occurred!"  
-  
-finally:  
-    GPIO.cleanup() # this ensures a clean exit  
-
+pause()
