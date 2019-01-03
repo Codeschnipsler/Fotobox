@@ -16,4 +16,4 @@ The workflow is as follows:
     - wait for a few seconds and receive the printout of the 4 in 1 collage from the printer
     - future feature: connect via webbrowser to download pics
 
-See manual.md for the install routine from @safay https://www.instructables.com/id/Raspberry-Pi-photo-booth-controller/ adapted for my setup.
+See install.md (https://github.com/Codeschnipsler/Fotobox/blob/master/install.md) for the install routine from @safay https://www.instructables.com/id/Raspberry-Pi-photo-booth-controller/ adapted for my setup.
