@@ -1,7 +1,7 @@
 ### Fotobox install
 original source https://www.instructables.com/id/Raspberry-Pi-photo-booth-controller/
 
-A: Setup the PI and install GPhoto2
+## Setup the PI and install GPhoto2
   1) Update the system:
 
          sudo apt-get update
@@ -29,8 +29,12 @@ A: Setup the PI and install GPhoto2
          gphoto2 --capture-image-and-download
          ls
 
-  6) Use CUPS to drive the printer. You can check to see if CUPS supports a particular printer. The Canon Selphy CP-900 is not on that list but people got it working using the SELPHY-CP770 driver. I have an old HP printer that I use for this project - it works but took some effort to find the right setup in CUPS. I also had to install hplip-gui in order to receive the printer in the list that I intended to use _ 
-
+  6) CUPS Printer setup
+  Use CUPS to drive the printer. You can check to see if CUPS supports a particular printer. The Canon Selphy CP-900 is not on that list but people got it working using the SELPHY-CP770 driver. I have an old HP printer that I use for this project - it works but took some effort to find the right setup in CUPS. I also had to install hplip-gui in order to receive the printer that I intended to use in the CUPS drivers list.  
+ 
+         sudo apt-get install hplip
+         sudo apt-get install hplip-gui 
+ 
   6.1) Install CUPS from the RPi command line (for further guidance/troubleshooting, see here)
 
                 sudo apt-get install cups
@@ -42,15 +46,12 @@ A: Setup the PI and install GPhoto2
 
   6.2) Connect your printer and setup CUPS from the RPi desktop
     Attach to the RPi by USB and power up your printer.
-
-   Open Midori and type into the URL line to open up the CUPS setup.
+    Open Midori and type into the URL line to open up the CUPS setup.
     http://127.0.0.1:631
-  
-
-   Click "administration" and "add printer;" enter your username and password (e.g., the defaults "pi" and "raspberry"). You should see your printer listed under "local printer;" select it and click "continue." Set the name and location of your printer as you like, and click "continue."
+    Click "administration" and "add printer;" enter your username and password (e.g., the defaults "pi" and "raspberry"). You should see your printer listed under "local printer;" select it and click "continue." Set the name and location of your printer as you like, and click "continue."
 
 7. Hardware
-  https://cdn.instructables.com/FP9/LHV6/HSE92TJ7/FP9LHV6HSE92TJ7.LARGE.jpg
+ Following Safay's [setup](https://cdn.instructables.com/FP9/LHV6/HSE92TJ7/FP9LHV6HSE92TJ7.LARGE.jpg), I used a permanent prototyping board to solder together the hardware buttons and LEDs. I used momentary switches (any normally open would do). Besides the main "Take Picture Button", which I use an [illuminated Arcade](https://amzn.to/2GTtYEG) button for, I added added a red button to start/shutdown the PI button and a green reboot button. The later two will sit inside the housing (out of the users' hands) and is just a little bit of trouble shooting measure and to simplify the setup (no more ssh or keyboard/mouse needed).
 
       GPIO17(3,3 V) to Button (grey)
       BCM18 to green LED, then 330OHM resistor, connect to ground (blue)
@@ -62,7 +63,8 @@ A: Setup the PI and install GPhoto2
 
                          GPIO17(3,3 V)       
                               |  
-                            Button
+                      "Take Picture Button"
+                              |
          BCM24 -o-- 1kOhm --- | --- 10kOhm --- GND --   
                                                      |
          BCM18 -b-- 330Ohm ----- green LED --- GND ----g-   GPIO14(GND)
@@ -71,18 +73,26 @@ A: Setup the PI and install GPhoto2
                                                      |
          BCM23 -y-- 330Ohm ---  button LED --- GND --
                                                      |         
-         BCM17 -v-- 1kOhm ---Button --- 10kOhm --GND-
+         BCM17 -v-- 1kOhm --- | --- 10kOhm --- GND --
+                              |
+                          "Reboot Button"
+                              |
+                         GPIO17(3,3 V) 
          
-         GPIO5 ---- Button ---- GPIO6      
+         GPIO5 ---- "Shutdown/start-Button" ---- GPIO6      
          
          legend
-         --- means that there is a cable to connect, the letter is a code for the colors I used (I use this to document)
+         --- means that there is a cable to connect
+         in my setup, I used the following colors (change to your liking)
             v = violet
             y = yellow
             r = red
             b = blue
             o = orange
             g = green
+
+For a secure attachment to the GPIOs, I used [DuPont crimps](https://amzn.to/2Tt8lfV). Usually I just hijack a standard jumper cable, unlock the one pin housing and put the metal piece in one of the multi pin housings from the box. But of course it is also possible to use a crimping device and do it all manually.
+
 
 8. Codes/Scripts
 
@@ -105,14 +115,14 @@ A: Setup the PI and install GPhoto2
 Edit the "assemble_and_print" script. Change the "lp" line to include your printer name.
 
 
-6) Test: try it out and run the script (ctrl-C to quit).
+9) Test: try it out and run the script (ctrl-C to quit).
 
                 sudo python ~/scripts/photobooth/photo_booth.py
 
 If it's glowing, push the button.
 
 
-7) Set script to run automatically.
+10) Set script to run automatically.
 If the step above works, then make the script run automatically at startup. This will be allow the booth to operate without an external computer or network.
 
                 sudo nano /etc/rc.local
@@ -127,8 +137,8 @@ Restart the RPi
                 Sudo reboot
 
 
-Setup
-1) Connect the printer and camera to the RPi using a USB hub.
+11) Setup
+1) Connect the printer and camera to the RPi.
 2) optional: connect Screen via HMDI
 
 Push the button to have fun
