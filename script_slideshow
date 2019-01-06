@@ -3,4 +3,4 @@
 
 export DISPLAY=:0.0
 XAUTHORITY=/home/pi/.Xauthority
-feh -Smtime -Z -F -R 5 -D10 /home/pi/photobooth_images &
+feh -Smtime -Z -F -R3 -D8 -Y /home/pi/photobooth_images &
